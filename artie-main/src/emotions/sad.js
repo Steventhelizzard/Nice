@@ -1,9 +1,7 @@
-import { setFace } from '../utils/face.js';
-
-const FACE = '(╥ᵔʖ╥)';
+import { setFaceShape } from '../utils/face.js';
 
 function init() {
-    setFace(FACE);
+    setFaceShape({ eyes: 'droopy', mouth: 'frown', cheeks: false });
 }
 
 function cleanup() {
