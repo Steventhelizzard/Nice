@@ -42,59 +42,50 @@ h1 {
 }
 
 #face {
-  font-size: 12rem;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 1.5rem;
+  width: 34rem;
+  height: 18rem;
 }
+
+/* ---------- Eyes ---------- */
 
 #face .eye {
-  transition: transform 0.3s ease-in-out;
-  width: 7rem;
+  width: 4rem;
+  height: 4rem;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 1.5rem rgba(255, 255, 255, 0.45);
+  transition: height 0.2s ease-in-out, border-radius 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
-#face.emotion-confused .eye {
-  transition: margin 0.3s ease-in-out;
-  margin: -1rem 0 0;
+/* Momentary blink - both eyes squash to a line */
+#face .eye.blink {
+  height: 0.5rem;
+  border-radius: 999px;
 }
 
-#face.emotion-confused .eye.moved {
-  transition: margin 0.3s ease-in-out;
-  margin: -6rem 0 0;
-}
-
-#face .mouth.left-mouth {
-  margin: 0 -1rem 0 1rem;
-}
-
-#face.emotion-listening .mouth.left-mouth {
-  margin: 0 0 -2rem 0;
-}
-
-#face.emotion-listening .mouth.left-mouth {
-  margin: 0 0 -2rem 0;
-}
-
-#face.emotion-sad .mouth {
-  margin: 0 -1rem -12rem 1rem;
-}
-
-#face.emotion-sad .eye {
-  position: relative;
+/* Sad - eyes droop and grow a falling tear */
+#face .eye[data-shape="droopy"] {
+  height: 3.25rem;
+  border-radius: 50% 50% 40% 40%;
+  transform: translateY(0.5rem);
 }
 
 #face.emotion-sad .eye::after {
   content: '';
   position: absolute;
-  top: -2rem;
+  top: 3.25rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 3.5rem;
-  height: 3.5rem;
-  background-color: #000;
-  animation: tearBreak 2s ease-in infinite;
-  z-index: 1;
+  width: 1.1rem;
+  height: 1.1rem;
+  background-color: #7ec8ff;
+  border-radius: 0 50% 50% 50%;
+  animation: tearFall 2s ease-in infinite;
 }
 
 #face.emotion-sad .left-eye::after {
@@ -105,123 +96,219 @@ h1 {
   animation-delay: 1.2s;
 }
 
-@keyframes tearBreak {
+@keyframes tearFall {
   0% {
-    top: 10.2rem;
+    top: 3.25rem;
     opacity: 0;
   }
   10% {
     opacity: 1;
   }
-  90% {
+  80% {
     opacity: 1;
   }
   100% {
-    top: 100%;
+    top: 9rem;
     opacity: 0;
   }
 }
 
-#face.emotion-happy .mouth {
-  margin: 0;
+/* Sleeping / loading - eyes fully closed */
+#face .eye[data-shape="closed"] {
+  height: 0.4rem;
+  border-radius: 999px;
+  box-shadow: none;
 }
 
-#face.emotion-happy .mouth.right-mouth {
-  position: relative;
-  margin: 0 0 0 -1rem;
+/* Happy - periodic arc-shaped "^ ^" blink */
+#face .eye.happy-blink {
+  height: 2rem;
+  border-radius: 100% 100% 0 0;
+  transform: translateY(1rem);
 }
 
-#face.emotion-happy .mouth.left-mouth {
-  position: relative;
-  transform: scaleY(50%);
-  margin: 4rem 1rem -2rem 0;
+/* Idle - subtle sideways peek */
+#face .eye.peeking {
+  animation: peekEyes 2s ease-in-out;
 }
 
-#face.emotion-happy .eye.happy {
-  margin-top: -2rem;
+@keyframes peekEyes {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  25%, 75% {
+    transform: translate(1rem, 0);
+  }
+  50% {
+    transform: translate(-1rem, 0);
+  }
 }
 
-#face.emotion-listening .mouth.left-mouth {
-  animation: scaleMouth 10s ease-in-out infinite;
+/* Confused - dramatic eye roll */
+#face .eye.rolling {
+  animation: rollEyes 1.5s ease-in-out;
+}
+
+@keyframes rollEyes {
+  0% {
+    transform: translate(0, 0);
+  }
+  30% {
+    transform: translate(-1.25rem, -1.25rem);
+  }
+  50% {
+    transform: translate(1.25rem, -1.25rem);
+  }
+  70% {
+    transform: translate(1.25rem, 1.25rem);
+  }
+  90% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* ---------- Mouths ----------
+   The mouth is drawn as two adjoining quarter-circle halves that meet
+   in the middle; which border/corner is rounded determines the curve
+   direction (smile vs. frown), giving a real drawn shape instead of a
+   glyph. */
+
+#face .mouth {
+  width: 2.75rem;
+  height: 2.75rem;
+  background: transparent;
+  border: 0 solid transparent;
+  transition: all 0.25s ease-in-out;
+  align-self: flex-start;
+  margin-top: 5rem;
+}
+
+#face .mouth.left-mouth {
+  margin-right: -1.375rem;
 }
 
 #face .mouth.right-mouth {
-  font-size: 80%;
-  margin: 0 1rem 0 -1rem;
+  margin-left: -1.375rem;
 }
 
-#face.emotion-confused .eye.rolling {
-  animation: confusedLook 1.5s ease-in-out;
+/* Neutral / flat (idle, working) - a simple straight bar */
+#face .mouth[data-shape="neutral"],
+#face .mouth[data-shape="flat"] {
+  height: 0.4rem;
+  border-radius: 999px;
+  background-color: #fff;
+  align-self: center;
+  margin-top: 0;
 }
 
-#face.emotion-idle .eye.rolling {
-  animation: rotateEyes 2s ease-in-out;
+/* Smile / Frown / Confused mouth - drawn as ONE continuous shape on
+   left-mouth (right-mouth is hidden), instead of two pieces meeting
+   in the middle. */
+#face .mouth[data-shape="smile"].right-mouth,
+#face .mouth[data-shape="frown"].right-mouth,
+#face .mouth[data-shape="wavy"].right-mouth {
+  display: none;
 }
 
-@keyframes confusedLook {
-  0% {
-    transform: translate(0, 0);
-  }
-  60% {
-    transform: translate(-1.5rem, -4rem);
-  }
-  70% {
-    transform: translate(1.5rem, -3.5rem);
-  }
-  90% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
+/* Smile (happy) - single U curve */
+#face .mouth[data-shape="smile"].left-mouth {
+  width: 5.5rem;
+  height: 2rem;
+  margin: 0;
+  align-self: flex-start;
+  margin-top: 9.5rem;
+  border: 0.4rem solid transparent;
+  border-bottom-color: #fff;
+  border-radius: 0 0 50% 50%;
 }
 
-@keyframes confusedLook {
-  0% {
-    transform: translate(0, 0);
-  }
-  60% {
-    transform: translate(-1.5rem, -4rem);
-  }
-  70% {
-    transform: translate(1.5rem, -3.5rem);
-  }
-  90% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
+/* Frown (sad) - single upside-down U curve */
+#face .mouth[data-shape="frown"].left-mouth {
+  width: 5.5rem;
+  height: 2rem;
+  margin: 0;
+  align-self: flex-start;
+  margin-top: 10rem;
+  border: 0.4rem solid transparent;
+  border-top-color: #fff;
+  border-radius: 50% 50% 0 0;
 }
 
-@keyframes rotateEyes {
-  0% {
-    transform: rotate(0deg);
-  }
-  20%, 80% {
-    transform: rotate(90deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
+/* Wavy (confused) - a single lopsided U, uneven corners for a
+   quizzical, slightly crooked look */
+#face .mouth[data-shape="wavy"].left-mouth {
+  width: 5rem;
+  height: 1.8rem;
+  margin: 0;
+  align-self: flex-start;
+  margin-top: 9rem;
+  border: 0.35rem solid transparent;
+  border-bottom-color: #fff;
+  border-radius: 0 0 70% 30%;
+  transform: rotate(-6deg);
 }
 
-@keyframes scaleMouth {
-  0% {
-    transform: scaleY(1) translateY(0);
-  }
-  40% {
-    transform: scaleY(1) translateY(0);
+/* Talking (listening) - flat bar that opens and closes */
+#face .mouth[data-shape="talking"] {
+  height: 0.5rem;
+  border-radius: 999px;
+  background-color: #fff;
+  align-self: center;
+  margin-top: 0;
+  animation: talk 1.4s ease-in-out infinite;
+}
+
+#face .mouth[data-shape="talking"].right-mouth {
+  animation-delay: 0.1s;
+}
+
+@keyframes talk {
+  0%, 100% {
+    transform: scaleY(1);
   }
   50% {
-    transform: scaleY(0.25) translateY(2.5rem);
+    transform: scaleY(4);
   }
-  70% {
-    transform: scaleY(0.25) translateY(2rem);
+}
+
+/* Loading - two pulsing "typing" dots */
+#face .mouth[data-shape="loading"] {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: #fff;
+  align-self: center;
+  margin: 0 0.5rem;
+  animation: dotPulse 1s ease-in-out infinite;
+  opacity: 0.4;
+}
+
+#face .mouth[data-shape="loading"].right-mouth {
+  animation-delay: 0.3s;
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.8);
   }
-  80% {
-    transform: scaleY(1) translateY(0);
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
   }
+}
+
+/* Small (sleeping) - short flat bar, plus a drifting snot bubble */
+#face .mouth[data-shape="small"] {
+  width: 1.25rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background-color: #fff;
+  align-self: center;
+  margin-top: 0;
 }
 
 #face.emotion-sleeping .mouth.right-mouth {
@@ -231,23 +318,42 @@ h1 {
 #face.emotion-sleeping .mouth.right-mouth::after {
   content: '';
   position: absolute;
-  top: 65%;
-  right: 0.25rem;
-  width: 2rem;
-  height: 2rem;
-  border: 5px solid #fff;
+  top: -1.5rem;
+  right: -1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 4px solid #fff;
   border-radius: 50%;
-  transform-origin: top left;
+  transform-origin: center;
   animation: snotBubble 5s ease-in-out infinite;
 }
 
 @keyframes snotBubble {
   0%, 100% {
-    transform: scale(0.75);
+    transform: scale(0.6);
+    opacity: 0.6;
   }
   50% {
-    transform: scale(1.75);
+    transform: scale(1.4);
+    opacity: 1;
   }
+}
+
+/* ---------- Cheeks ---------- */
+
+#face .cheek {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #ff8fa3;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+#face .cheek.visible {
+  opacity: 0.85;
+  transform: scale(1);
 }
 
 button {
