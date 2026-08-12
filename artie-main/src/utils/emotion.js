@@ -65,15 +65,21 @@ function cleanupCurrentEmotion() {
         emotions[animationState.currentEmotion].cleanup();
     }
 
-    // Remove any lingering CSS classes from eyes
+    // Remove any lingering transient CSS classes from eyes
     const leftEye = document.querySelector('.left-eye');
     const rightEye = document.querySelector('.right-eye');
     if (leftEye) {
-        leftEye.classList.remove('rolling', 'happy');
+        leftEye.classList.remove('rolling', 'peeking', 'blink', 'happy-blink');
     }
     if (rightEye) {
-        rightEye.classList.remove('rolling', 'happy');
+        rightEye.classList.remove('rolling', 'peeking', 'blink', 'happy-blink');
     }
+
+    // Hide cheeks by default - emotions that want them opt back in via setFaceShape
+    const leftCheek = document.querySelector('.left-cheek');
+    const rightCheek = document.querySelector('.right-cheek');
+    if (leftCheek) leftCheek.classList.remove('visible');
+    if (rightCheek) rightCheek.classList.remove('visible');
 }
 
 function setEmotion(emotionString) {
