@@ -1,10 +1,8 @@
-import { setFace } from '../utils/face.js';
+import { setFaceShape } from '../utils/face.js';
 import { addTimeout } from '../utils/emotion.js';
 
-const FACE = '(｡_ʖ｡)';
-
 function init() {
-    setFace(FACE);
+    setFaceShape({ eyes: 'round', mouth: 'wavy', cheeks: false });
     scheduleNextRollEyes();
 }
 
