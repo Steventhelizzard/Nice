@@ -1,71 +1,64 @@
-import { setFace } from '../utils/face.js';
+import { setFaceShape } from '../utils/face.js';
 import { addTimeout } from '../utils/emotion.js';
 
-const FACE = '(◕_ʖ◕)';
-
 function init() {
-    setFace(FACE);
+    setFaceShape({ eyes: 'round', mouth: 'neutral', cheeks: false });
     scheduleNextBlink();
-    scheduleNextRollEyes();
+    scheduleNextPeek();
 }
 
 function cleanup() {
-    // Remove any CSS classes that might be lingering
     const leftEye = document.querySelector('.left-eye');
     const rightEye = document.querySelector('.right-eye');
-    if (leftEye) leftEye.classList.remove('rolling');
-    if (rightEye) rightEye.classList.remove('rolling');
+    if (leftEye) leftEye.classList.remove('peeking');
+    if (rightEye) rightEye.classList.remove('peeking');
 }
 
-function swapEyes(newEyeChar, duration = 350) {
+function blink(duration = 350) {
     const leftEye = document.querySelector('.left-eye');
     const rightEye = document.querySelector('.right-eye');
     if (!leftEye || !rightEye) return;
 
-    const originalLeft = leftEye.textContent;
-    const originalRight = rightEye.textContent;
-
-    leftEye.textContent = newEyeChar;
-    rightEye.textContent = newEyeChar;
+    leftEye.classList.add('blink');
+    rightEye.classList.add('blink');
 
     addTimeout(() => {
-        // Only restore if elements still exist
         const le = document.querySelector('.left-eye');
         const re = document.querySelector('.right-eye');
-        if (le) le.textContent = originalLeft;
-        if (re) re.textContent = originalRight;
+        if (le) le.classList.remove('blink');
+        if (re) re.classList.remove('blink');
     }, duration);
 }
 
-function rollEyes() {
+function peekEyes() {
     const leftEye = document.querySelector('.left-eye');
     const rightEye = document.querySelector('.right-eye');
     if (!leftEye || !rightEye) return;
 
-    leftEye.classList.add('rolling');
-    rightEye.classList.add('rolling');
+    leftEye.classList.add('peeking');
+    rightEye.classList.add('peeking');
 
     addTimeout(() => {
         const le = document.querySelector('.left-eye');
         const re = document.querySelector('.right-eye');
-        if (le) le.classList.remove('rolling');
-        if (re) re.classList.remove('rolling');
+        if (le) le.classList.remove('peeking');
+        if (re) re.classList.remove('peeking');
     }, 2000);
 }
 
 function scheduleNextBlink() {
     const delay = Math.random() * 3000 + 1000;
     addTimeout(() => {
-        swapEyes('-');
+        blink();
         scheduleNextBlink();
     }, delay);
 }
 
-function scheduleNextRollEyes() {
+function scheduleNextPeek() {
     const delay = Math.random() * 7000 + 4000;
     addTimeout(() => {
-        rollEyes();
-        scheduleNextRollEyes();
+        peekEyes();
+        scheduleNextPeek();
     }, delay);
 }
 
