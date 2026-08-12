@@ -1,25 +1,13 @@
-import { setFace } from '../utils/face.js';
-import { addInterval } from '../utils/emotion.js';
-
-const FACE = '(⠙,ʖ⠙)';
+import { setFaceShape } from '../utils/face.js';
 
 function init() {
-    setFace(FACE);
-    startLoadingAnimation();
+    // Eyes rest closed in thought while the mouth becomes an animated
+    // "typing" indicator (two pulsing dots), driven entirely by CSS.
+    setFaceShape({ eyes: 'closed', mouth: 'loading', cheeks: false });
 }
 
 function cleanup() {
-    // Nothing extra to clean up - interval is cleared centrally
-}
-
-function startLoadingAnimation() {
-    const pattern = ['⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏', '⠋'];
-    let index = 0;
-
-    addInterval(() => {
-        setFace('(' + pattern[index] + ',ʖ' + pattern[index] + ')');
-        index = (index + 1) % pattern.length;
-    }, 150);
+    // Nothing extra to clean up - animation is pure CSS now
 }
 
 export { init, cleanup };
