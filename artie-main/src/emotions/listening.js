@@ -1,10 +1,8 @@
-import { setFace } from '../utils/face.js';
+import { setFaceShape } from '../utils/face.js';
 import { addTimeout } from '../utils/emotion.js';
 
-const FACE = '(⚆.ʖ⚆)';
-
 function init() {
-    setFace(FACE);
+    setFaceShape({ eyes: 'round', mouth: 'talking', cheeks: false });
     scheduleNextBlink();
 }
 
@@ -12,29 +10,26 @@ function cleanup() {
     // Nothing extra to clean up
 }
 
-function swapEyes(newEyeChar, duration = 500) {
+function blink(duration = 500) {
     const leftEye = document.querySelector('.left-eye');
     const rightEye = document.querySelector('.right-eye');
     if (!leftEye || !rightEye) return;
 
-    const originalLeft = leftEye.textContent;
-    const originalRight = rightEye.textContent;
-
-    leftEye.textContent = newEyeChar;
-    rightEye.textContent = newEyeChar;
+    leftEye.classList.add('blink');
+    rightEye.classList.add('blink');
 
     addTimeout(() => {
         const le = document.querySelector('.left-eye');
         const re = document.querySelector('.right-eye');
-        if (le) le.textContent = originalLeft;
-        if (re) re.textContent = originalRight;
+        if (le) le.classList.remove('blink');
+        if (re) re.classList.remove('blink');
     }, duration);
 }
 
 function scheduleNextBlink() {
     const delay = Math.random() * 3500 + 750;
     addTimeout(() => {
-        swapEyes('-');
+        blink();
         scheduleNextBlink();
     }, delay);
 }
